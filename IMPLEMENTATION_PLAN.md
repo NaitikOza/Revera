@@ -23,3 +23,4 @@
 
 - This is a synthetic-record research demonstration, not a diagnostic device or clinical decision support system validated for care.
 - No model weights, SQLite database, environment secrets, or real patient data belong in Git.
+- This workstation does not currently have `llama-server` or a Gemma GGUF installed. The model boundary is covered by accepted/rejected response tests and the browser-verified offline fallback, but live generation requires the operator setup in `README.md`.

@@ -37,6 +37,8 @@ If an older Corepack build rejects pnpm's current signing key, update Corepack t
 
 Gemma 4 E2B Instruct is available as an open-weight Google model. Recent `llama.cpp` releases implement the `gemma4` architecture and publish a maintained GGUF repository at [`ggml-org/gemma-4-E2B-it-GGUF`](https://huggingface.co/ggml-org/gemma-4-E2B-it-GGUF). Use a recent `llama.cpp` build—older builds predate Gemma 4 support.
 
+> Environment note: the initial project build machine did not include `llama-server` or model weights. The validated-response tests and real offline fallback were verified; live generation becomes available after completing the setup below.
+
 Either let a current `llama-server` resolve the maintained repository:
 
 ```bash
