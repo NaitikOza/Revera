@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Patient {
+  id            String             @id
+  recordNumber  String             @unique
+  displayName   String
+  initials      String
+  age           Int
+  sex           String
+  location      String
+  admittedAt    DateTime
+  acuity        String
+  summary       String
+  careTeam      String
+  synthetic     Boolean            @default(true)
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  records       ClinicalRecord[]
+  diagnoses     Diagnosis[]
+  alerts        ReviewAlert[]
+
+  @@index([admittedAt])
+}
+
+model ClinicalRecord {
+  id            String   @id
+  patientId     String
+  recordedAt    DateTime
+  kind          String
+  title         String
+  summary       String
+  source        String
+  author        String
+  evidenceJson  String
+  patient       Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@index([patientId, recordedAt])
+}
+
+model Diagnosis {
+  id                String                   @id
+  patientId         String
+  name              String
+  code              String
+  firstDocumentedAt DateTime
+  currentStatus     String
+  description       String
+  patient           Patient                  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  history           DiagnosisStatusEvent[]
+  alerts            ReviewAlert[]
+
+  @@unique([patientId, code])
+  @@index([patientId, firstDocumentedAt])
+}
+
+model DiagnosisStatusEvent {
+  id                  String    @id
+  diagnosisId         String
+  changedAt           DateTime
+  status              String
+  note                String
+  author              String
+  sourceRecordId      String?
+  supportingRecordIds String
+  diagnosis           Diagnosis @relation(fields: [diagnosisId], references: [id], onDelete: Cascade)
+
+  @@index([diagnosisId, changedAt])
+}
+
+model ReviewAlert {
+  id              String    @id
+  patientId       String
+  diagnosisId     String
+  kind            String
+  severity        String
+  detectedAt      DateTime
+  sourceRecordIds String
+  citedEvidence   String
+  explanation     String
+  uncertainty     String
+  provenance      String
+  reviewStatus    String    @default("needs_review")
+  reviewedAt      DateTime?
+  patient         Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  diagnosis       Diagnosis @relation(fields: [diagnosisId], references: [id], onDelete: Cascade)
+
+  @@index([patientId, detectedAt])
+}

@@ -1,0 +1,31 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# Next.js
+.next/
+out/
+
+# local configuration and logs
+.env
+.env.local
+.env.*.local
+*.log
+.DS_Store
+
+# generated and local clinical-demo data
+prisma/*.db
+prisma/*.db-journal
+prisma/*.sqlite
+prisma/*.sqlite-journal
+*.db
+*.db-journal
+
+# local model weights
+models/*
+!models/.gitkeep
+
+# coverage and tooling
+coverage/
+*.tsbuildinfo
+.vercel/
