@@ -1,16 +1,18 @@
 import { detectDiagnosticDrift } from "@/lib/drift";
 import { reviewWithLocalModel } from "@/lib/local-model";
 import { getAnalysisCase } from "@/lib/repository";
+import type { ReviewContext } from "@/lib/schemas";
 
-export async function analyzePatient(patientId: string) {
+export async function analyzePatient(patientId: string, context?: ReviewContext) {
   const analysisCase = await getAnalysisCase(patientId);
   if (!analysisCase) return null;
 
   const rules = detectDiagnosticDrift(analysisCase);
-  const model = await reviewWithLocalModel(analysisCase, rules.alerts);
+  const model = await reviewWithLocalModel(analysisCase, rules.alerts, context);
 
   return {
     analyzedAt: new Date().toISOString(),
+    context: context ?? null,
     outcome: rules.alerts.length > 0 ? "needs_clinician_review" : "insufficient_evidence",
     alerts: rules.alerts.map((alert) => ({
       ...alert,

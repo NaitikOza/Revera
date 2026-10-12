@@ -14,6 +14,7 @@ import { parseJson, parseStringArray } from "@/lib/json";
 import {
   citationSchema,
   evidencePayloadSchema,
+  type CompletedReview,
   type ReviewAlert,
 } from "@/lib/schemas";
 import { validateAlert } from "@/lib/validation";
@@ -246,4 +247,73 @@ export async function updateAlertReviewStatus(
     },
     select: { id: true, reviewStatus: true, reviewedAt: true },
   });
+}
+
+export interface OpenReviewItem {
+  alert: PatientDetail["alerts"][number];
+  patient: Pick<PatientDetail, "id" | "displayName" | "initials" | "recordNumber">;
+}
+
+export interface CompletedReviewItem {
+  id: string;
+  completedAt: string;
+  reason: string;
+  confidence: string;
+  outcome: string;
+  findingCount: number;
+  modelStatus: string;
+  feedback: string | null;
+  patient: { id: string; displayName: string; initials: string; recordNumber: string };
+}
+
+export async function createCompletedReview(input: CompletedReview) {
+  const patient = await db.patient.findFirst({ where: { id: input.patientId, synthetic: true }, select: { id: true } });
+  if (!patient) return null;
+  return db.reviewSession.create({
+    data: {
+      patientId: input.patientId,
+      reason: input.context.reason,
+      confidence: input.context.confidence,
+      outcome: input.outcome,
+      findingCount: input.findingCount,
+      modelStatus: input.modelStatus,
+      feedback: input.feedback,
+    },
+    select: { id: true, completedAt: true },
+  });
+}
+
+export async function getReviewActivity(): Promise<{ open: OpenReviewItem[]; completed: CompletedReviewItem[] }> {
+  const [patients, sessions] = await Promise.all([
+    getPatientSummaries(),
+    db.reviewSession.findMany({
+      where: { patient: { synthetic: true } },
+      orderBy: { completedAt: "desc" },
+      include: { patient: { select: { id: true, displayName: true, initials: true, recordNumber: true } } },
+    }),
+  ]);
+  const details = await Promise.all(patients.map((patient) => getPatientDetail(patient.id)));
+  const open = details
+    .filter((patient): patient is PatientDetail => patient !== null)
+    .flatMap((patient) =>
+      patient.alerts
+        .filter((alert) => alert.reviewStatus === "needs_review")
+        .map((alert) => ({
+          alert,
+          patient: {
+            id: patient.id,
+            displayName: patient.displayName,
+            initials: patient.initials,
+            recordNumber: patient.recordNumber,
+          },
+        })),
+    )
+    .sort((left, right) => Date.parse(right.alert.detectedAt) - Date.parse(left.alert.detectedAt));
+  return {
+    open,
+    completed: sessions.map((session) => ({
+      ...session,
+      completedAt: session.completedAt.toISOString(),
+    })),
+  };
 }

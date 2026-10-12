@@ -25,8 +25,24 @@ model Patient {
   records       ClinicalRecord[]
   diagnoses     Diagnosis[]
   alerts        ReviewAlert[]
+  reviewSessions ReviewSession[]
 
   @@index([admittedAt])
+}
+
+model ReviewSession {
+  id           String   @id @default(cuid())
+  patientId    String
+  completedAt  DateTime @default(now())
+  reason       String
+  confidence   String
+  outcome      String
+  findingCount Int
+  modelStatus  String
+  feedback     String?
+  patient      Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@index([patientId, completedAt])
 }
 
 model ClinicalRecord {

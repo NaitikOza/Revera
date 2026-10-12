@@ -348,6 +348,7 @@ const alerts = [
 ];
 
 async function main() {
+  await prisma.reviewSession.deleteMany();
   await prisma.reviewAlert.deleteMany();
   await prisma.diagnosisStatusEvent.deleteMany();
   await prisma.diagnosis.deleteMany();

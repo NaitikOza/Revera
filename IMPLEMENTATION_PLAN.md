@@ -12,6 +12,14 @@
 - [x] Verify migrations, types, lint, tests, production build, and core browser flows.
 - [x] Finish setup, safety, architecture, and demo documentation; commit milestones.
 
+## Usability redesign
+
+- [x] Replace decorative navigation with working Home, Patients, and Reviews routes.
+- [x] Split the all-in-one dashboard into focused patient profile, evidence, and review screens.
+- [x] Add a short clinician-context questionnaire before analysis.
+- [x] Rewrite review results in plain language with source details hidden by default.
+- [x] Persist completed review sessions and feedback in local SQLite.
+
 ## Verified assumptions
 
 - Gemma 4 E2B Instruct is a current Google open-weight model. Current `llama.cpp` builds support the `gemma4` architecture and expose `/v1/chat/completions` through `llama-server`.

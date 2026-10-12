@@ -1,19 +1,20 @@
 # Revera
 
-Revera is a local-only research prototype that helps clinicians notice when a documented diagnosis may no longer be supported by the evolving record. It places the evidence timeline, diagnosis-status history, and explainable review signals in one workspace.
+Revera is a local-only research prototype that helps clinicians notice when a documented diagnosis may no longer be supported by the evolving record. It uses a focused flow: choose a patient, review their profile, answer two context questions, and inspect a short evidence result.
 
 The included people, encounters, results, and diagnoses are entirely synthetic. Revera is **not a validated diagnostic device**, does not decide what diagnosis is correct, never changes diagnosis status, and does not recommend treatment.
 
 ## What works
 
-- A responsive clinician workspace with a patient review queue, longitudinal evidence timeline, diagnosis thread, and review state.
+- Separate home, patient queue, patient profile, evidence, guided review, and review-history screens.
+- A two-question review flow with plain-language results and expandable source details.
 - Two deterministic drift rules:
   - newer, diagnosis-linked evidence conflicts with a documented diagnosis;
   - an uncertain diagnosis becomes confirmed without new supporting evidence in the intervening chronology.
 - Strict alert validation: every displayed alert must reference an existing diagnosis, known source record IDs, verbatim cited evidence, and records at or before the alert time.
 - Optional Gemma 4 E2B explanations through a loopback-only `llama.cpp` server. The model may restate only code-detected candidates; invented candidates and malformed output are rejected.
 - Honest degraded behavior when the local model is stopped, output is invalid, or evidence is insufficient.
-- Persistent clinician review state in local SQLite.
+- Persistent clinician review sessions, feedback, and alert state in local SQLite.
 - Three seeded trajectories: contradictory/unsupported, normally confirmed, and ambiguous.
 
 ## Quick start
@@ -122,9 +123,15 @@ or:
 
 Available routes:
 
+- `GET /patients`
+- `GET /patients/:patientId`
+- `GET /patients/:patientId/timeline`
+- `GET /patients/:patientId/review`
+- `GET /reviews`
 - `GET /api/patients`
 - `GET /api/patients/:patientId`
 - `POST /api/patients/:patientId/analysis`
+- `POST /api/reviews`
 - `PATCH /api/alerts/:alertId`
 - `GET /api/system/health`
 

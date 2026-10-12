@@ -1,5 +1,5 @@
 import type { AnalysisCase } from "@/lib/domain";
-import { modelResponseSchema, type ReviewAlert } from "@/lib/schemas";
+import { modelResponseSchema, type ReviewAlert, type ReviewContext } from "@/lib/schemas";
 import { proposalToAlert } from "@/lib/validation";
 import { z } from "zod";
 
@@ -67,6 +67,7 @@ export interface ModelReviewResult {
 export async function reviewWithLocalModel(
   analysisCase: AnalysisCase,
   ruleAlerts: ReviewAlert[],
+  context?: ReviewContext,
 ): Promise<ModelReviewResult> {
   const config = getConfig();
   if (ruleAlerts.length === 0) {
@@ -90,6 +91,7 @@ export async function reviewWithLocalModel(
     "You may restate only the code-detected candidates listed below. Do not create a new diagnosis, finding, record, or candidate.",
     "Each alert needs diagnosisId, kind, severity, detectedAt, sourceRecordIds, citedEvidence, explanation, and uncertainty.",
     `Allowed candidates: ${JSON.stringify(allowedCandidates)}`,
+    context ? `Clinician review context: ${JSON.stringify(context)}` : "No review context was supplied.",
     `Synthetic case: ${JSON.stringify(caseForPrompt(analysisCase))}`,
   ].join("\n\n");
 
