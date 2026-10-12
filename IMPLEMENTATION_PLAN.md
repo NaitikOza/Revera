@@ -2,15 +2,15 @@
 
 - [x] Read the project specification and inspect the repository.
 - [x] Verify the local model, inference API, privacy boundary, and toolchain assumptions.
-- [ ] Initialize the Next.js, strict TypeScript, Tailwind, Prisma, and test toolchain.
-- [ ] Model and seed synthetic longitudinal records, diagnoses, status history, and review state.
-- [ ] Implement deterministic drift detection and strict citation/chronology validation.
-- [ ] Integrate optional local Gemma 4 review with validated, server-only structured output.
-- [ ] Build the clinician dashboard, evidence timeline, diagnosis history, and explainable alerts.
-- [ ] Add route handlers with consistent response envelopes and honest degraded states.
-- [ ] Test normal, contradictory, ambiguous, unsupported-alert, and invalid-model-output cases.
-- [ ] Verify migrations, types, lint, tests, production build, and core browser flows.
-- [ ] Finish setup, safety, architecture, and demo documentation; commit milestones.
+- [x] Initialize the Next.js, strict TypeScript, Tailwind, Prisma, and test toolchain.
+- [x] Model and seed synthetic longitudinal records, diagnoses, status history, and review state.
+- [x] Implement deterministic drift detection and strict citation/chronology validation.
+- [x] Integrate optional local Gemma 4 review with validated, server-only structured output.
+- [x] Build the clinician dashboard, evidence timeline, diagnosis history, and explainable alerts.
+- [x] Add route handlers with consistent response envelopes and honest degraded states.
+- [x] Test normal, contradictory, ambiguous, unsupported-alert, and invalid-model-output cases.
+- [x] Verify migrations, types, lint, tests, production build, and core browser flows.
+- [x] Finish setup, safety, architecture, and demo documentation; commit milestones.
 
 ## Verified assumptions
 
